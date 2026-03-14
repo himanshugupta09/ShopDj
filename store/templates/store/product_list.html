@@ -1,0 +1,43 @@
+{% extends 'store/base.html' %}
+
+{% block title %}All Products - ShopDjango{% endblock %}
+
+{% block content %}
+<div style="padding: 16px 24px;">
+
+    <!-- Search result info -->
+    {% if request.GET.q %}
+        <p>Search results for: <strong>{{ request.GET.q }}</strong></p>
+    {% endif %}
+
+    <div class="product-grid">
+        {% for product in products %}
+            <a href="{% url 'product_detail' product.slug %}" class="product-card">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/200x180?text=No+Image" alt="No image">
+                {% endif %}
+                <p class="name">{{ product.name }}</p>
+                <p class="price">₹{{ product.price }}</p>
+            </a>
+        {% empty %}
+            <p>No products found.</p>
+        {% endfor %}
+    </div>
+
+    <!-- PAGINATION -->
+    {% if is_paginated %}
+        <div style="text-align:center; padding: 24px;">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary">← Prev</a>
+            {% endif %}
+            <span style="margin: 0 16px;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary">Next →</a>
+            {% endif %}
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

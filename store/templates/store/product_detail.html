@@ -1,0 +1,35 @@
+{% extends 'store/base.html' %}
+
+{% block title %}{{ product.name }} - ShopDjango{% endblock %}
+
+{% block content %}
+<div style="display:flex; gap:40px; padding:40px; background:white; margin:24px;">
+
+    <!-- Product Image -->
+    <div style="flex:1;">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" style="width:100%; max-height:400px; object-fit:contain;">
+        {% else %}
+            <img src="https://via.placeholder.com/400x400?text=No+Image" style="width:100%;">
+        {% endif %}
+    </div>
+
+    <!-- Product Info -->
+    <div style="flex:1;">
+        <h1>{{ product.name }}</h1>
+        <p style="color:#2874f0;">{{ product.category.name }}</p>
+        <h2 style="color:#388e3c; margin:16px 0;">₹{{ product.price }}</h2>
+        <p>{{ product.description }}</p>
+
+        <div style="margin-top: 24px;">
+            {% if product.is_in_stock %}
+                <p style="color:green;">✅ In Stock ({{ product.stock }} left)</p>
+                <button class="btn btn-primary" style="margin-right:8px;">🛒 Add to Cart</button>
+                <button class="btn btn-secondary">Buy Now</button>
+            {% else %}
+                <p style="color:red;">❌ Out of Stock</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

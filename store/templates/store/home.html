@@ -1,0 +1,41 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Home - ShopDjango{% endblock %}
+
+{% block content %}
+
+<!-- CATEGORIES ROW -->
+<div style="padding: 16px 24px; background: white; margin-bottom: 8px;">
+    <strong>Categories: </strong>
+    {% for category in categories %}
+        <a href="{% url 'category_products' category.slug %}"
+           style="margin-right: 16px; color: #2874f0;">
+            {{ category.name }}
+        </a>
+    {% endfor %}
+</div>
+
+<!-- FEATURED PRODUCTS -->
+<h2 style="padding: 16px 24px;">Featured Products</h2>
+<div class="product-grid">
+    {% for product in products %}
+        <a href="{% url 'product_detail' product.slug %}" class="product-card">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img src="https://via.placeholder.com/200x180?text=No+Image" alt="No image">
+            {% endif %}
+            <p class="name">{{ product.name }}</p>
+            <p class="price">₹{{ product.price }}</p>
+            {% if product.is_in_stock %}
+                <span style="color: green; font-size: 12px;">✅ In Stock</span>
+            {% else %}
+                <span style="color: red; font-size: 12px;">❌ Out of Stock</span>
+            {% endif %}
+        </a>
+    {% empty %}
+        <p>No products available.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}
