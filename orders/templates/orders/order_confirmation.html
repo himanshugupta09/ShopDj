@@ -1,0 +1,31 @@
+{% extends 'store/base.html' %}
+{% block title %}Order Confirmed! - ShopDjango{% endblock %}
+
+{% block content %}
+<div style="max-width:600px; margin:60px auto; text-align:center;">
+    <div style="background:white; padding:48px; border-radius:8px;">
+        <p style="font-size:64px;">🎉</p>
+        <h2 style="color:#388e3c;">Order Placed Successfully!</h2>
+        <p style="color:#888; margin:8px 0;">Order #{{ order.id }}</p>
+        <p style="color:#888;">Status: <strong>{{ order.status|capfirst }}</strong></p>
+        <p style="font-size:24px; font-weight:bold; margin:16px 0; color:#333;">
+            Total: ₹{{ order.total_price }}
+        </p>
+
+        <!-- Order Items -->
+        <div style="text-align:left; margin:24px 0; border-top:1px solid #eee; padding-top:16px;">
+            {% for item in items %}
+            <div style="display:flex; justify-content:space-between; padding:8px 0;">
+                <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                <span>₹{{ item.price }}</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div style="display:flex; gap:16px; justify-content:center; margin-top:24px;">
+            <a href="{% url 'order_history' %}" class="btn btn-secondary">View My Orders</a>
+            <a href="{% url 'product_list' %}" class="btn btn-primary">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

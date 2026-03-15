@@ -1,0 +1,45 @@
+{% extends 'store/base.html' %}
+{% block title %}Checkout - ShopDjango{% endblock %}
+
+{% block content %}
+<div style="max-width:700px; margin:40px auto;">
+    <h2>📦 Checkout</h2>
+
+    <!-- Order Summary -->
+    <div style="background:white; padding:24px; border-radius:8px; margin-top:16px;">
+        <h3 style="margin-bottom:16px;">Order Summary</h3>
+        {% for item in items %}
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
+            <span>{{ item.product.name }} × {{ item.quantity }}</span>
+            <span>₹{{ item.get_item_total }}</span>
+        </div>
+        {% endfor %}
+        <div style="display:flex; justify-content:space-between; padding-top:16px; font-weight:bold; font-size:18px;">
+            <span>Total</span>
+            <span style="color:#388e3c;">₹{{ total }}</span>
+        </div>
+    </div>
+
+    <!-- Delivery Address -->
+    <div style="background:white; padding:24px; border-radius:8px; margin-top:16px;">
+        <h3>📍 Delivery Address</h3>
+        {% if address %}
+            <p style="margin-top:8px; color:#555;">{{ address }}</p>
+        {% else %}
+            <p style="color:red; margin-top:8px;">
+                ⚠️ No address saved.
+                <a href="{% url 'profile' %}" style="color:#2874f0;">Add address in profile</a>
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- Place Order -->
+    <form method="POST" style="margin-top:24px;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary"
+                style="width:100%; padding:16px; font-size:16px;">
+            🎉 Place Order — ₹{{ total }}
+        </button>
+    </form>
+</div>
+{% endblock %}

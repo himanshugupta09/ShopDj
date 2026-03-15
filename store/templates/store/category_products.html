@@ -1,8 +1,35 @@
+{% extends 'store/base.html' %}
 
-<!DOCTYPE html>
-<html>
-<body>
-    <h1>{{ view.get_template_names }}</h1>
-    <p>Template is working!</p>
-</body>
-</html>
+{% block title %}{{ category.name }} - ShopDjango{% endblock %}
+
+{% block content %}
+<div style="padding: 16px 24px;">
+
+    <!-- Category Header -->
+    <h2 style="margin-bottom: 16px;">
+        📦 {{ category.name }} 
+        <span style="font-size:14px; color:#888;">({{ products.count }} products)</span>
+    </h2>
+
+    <div class="product-grid">
+        {% for product in products %}
+            <a href="{% url 'product_detail' product.slug %}" class="product-card">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/200x180?text=No+Image" alt="No image">
+                {% endif %}
+                <p class="name">{{ product.name }}</p>
+                <p class="price">₹{{ product.price }}</p>
+                {% if product.is_in_stock %}
+                    <span style="color:green; font-size:12px;">✅ In Stock</span>
+                {% else %}
+                    <span style="color:red; font-size:12px;">❌ Out of Stock</span>
+                {% endif %}
+            </a>
+        {% empty %}
+            <p>No products in this category yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

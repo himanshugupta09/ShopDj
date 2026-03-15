@@ -1,7 +1,17 @@
 from django.http import HttpResponse
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import redirect, render,get_object_or_404
 from .models import Product,Category
 from django.views.generic import ListView, DetailView
+from django.contrib import messages
+from .forms import ProductForm
+from django.core.exceptions import PermissionDenied
+
+def add_product(request):
+    # Only admin role can add products
+    if not request.user.is_authenticated or request.user.profile.role != 'admin':
+        raise PermissionDenied  # returns 403 Forbidden
+    ...
+    
 def home(request):
     featured_products = Product.objects.filter(stock__gt=0)[:8]
     categories = Category.objects.all()
@@ -48,3 +58,37 @@ def category_products(request, slug):
         'products': products,
     }
     return render(request, 'store/category_products.html', context)
+def get_query_results(request):
+    search_query = request.GET.get('q')
+    if search_query:
+        products = Product.objects.filter(name__icontains=search_query, stock__gt=0)
+    else:
+        products = Product.objects.none()
+    context = {
+        'products': products,
+        'search_query': search_query,
+    }
+    return render(request, 'store/search_results.html', context)
+
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Product added successfully!')
+            return redirect('home')
+    else:
+        form = ProductForm()
+    return render(request, 'store/add_product.html', {'form': form})
+
+def edit_product(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Product '{product.name}' updated successfully!")
+            return redirect('product_detail', slug=product.slug)
+    else:
+        form = ProductForm(instance=product)
+    return render(request, 'store/add_product.html', {'form': form, 'editing': True, 'product': product})

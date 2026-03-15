@@ -21,19 +21,51 @@
 
     <!-- Nav Links -->
     <div>
-        <a href="{% url 'product_list' %}" style="margin-right:16px;">Products</a>
-        <a href="{% url 'cart' %}" style="margin-right:16px;">🛒 Cart</a>
-        <a href="/users/login/">Login</a>
+        <a href="{% url 'product_list' %}" style="margin-right:16px; color:white;">Products</a>
+        <a href="{% url 'cart' %}" style="margin-right:16px; color:white;">🛒 Cart</a>
+
+        {% if request.user.is_authenticated %}
+            {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
+                <a href="{% url 'add_product' %}" style="margin-right:16px; color:#ffe500;">➕ Add Product</a>
+            {% endif %}
+
+            <a href="{% url 'profile' %}" style="margin-right:16px; color:white; display:inline-flex; align-items:center; gap:8px;">
+                {% if request.user.profile.avatar %}
+                    <img src="{{ request.user.profile.avatar.url }}"
+                        style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:2px solid white;">
+                {% else %}
+                    <div style="width:28px; height:28px; border-radius:50%; background:#ffe500;
+                                display:inline-flex; align-items:center; justify-content:center;">
+                        <span style="color:#2874f0; font-weight:bold; font-size:12px;">
+                            {{ request.user.first_name|first|upper }}
+                        </span>
+                    </div>
+                {% endif %}
+                {{ request.user.first_name }}
+            </a>
+            <a href="{% url 'logout' %}" style="color:white;">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}" style="margin-right:16px; color:white;">Login</a>
+            <a href="{% url 'register' %}" style="color:white;">Register</a>
+        {% endif %}
     </div>
 </nav>
 
 <!-- MAIN CONTENT -->
+
 <main>
+    <!-- Flash Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div style="background:#d4edda; color:#155724; padding:12px 24px; border-left: 4px solid #28a745;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
     {% block content %}
-    <!-- Each page fills this block -->
     {% endblock %}
 </main>
-
 <footer>
     <p>© 2025 ShopDjango — Built with Django 🐍</p>
 </footer>

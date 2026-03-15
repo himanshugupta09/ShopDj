@@ -11,4 +11,6 @@ urlpatterns = [
     # <slug:slug> matches URL-friendly strings like "samsung-tv-2025"
 
     path('category/<slug:slug>/', views.category_products, name='category_products'),
+    path('add-product/', views.add_product, name='add_product'),
+    path('edit-product/<slug:slug>/', views.edit_product, name='edit_product'),
 ]

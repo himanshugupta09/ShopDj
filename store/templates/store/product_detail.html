@@ -1,31 +1,26 @@
 {% extends 'store/base.html' %}
-
 {% block title %}{{ product.name }} - ShopDjango{% endblock %}
-
 {% block content %}
-<div style="display:flex; gap:40px; padding:40px; background:white; margin:24px;">
-
-    <!-- Product Image -->
+<div style="display:flex; gap:40px; padding:40px; background:white; margin:24px; border-radius:8px;">
     <div style="flex:1;">
         {% if product.image %}
             <img src="{{ product.image.url }}" style="width:100%; max-height:400px; object-fit:contain;">
         {% else %}
-            <img src="https://via.placeholder.com/400x400?text=No+Image" style="width:100%;">
+            <img src="https://via.placeholder.com/200x180?text=No+Image" style="width:100%;">
         {% endif %}
     </div>
-
-    <!-- Product Info -->
-    <div style="flex:1;">
-        <h1>{{ product.name }}</h1>
-        <p style="color:#2874f0;">{{ product.category.name }}</p>
-        <h2 style="color:#388e3c; margin:16px 0;">₹{{ product.price }}</h2>
-        <p>{{ product.description }}</p>
-
-        <div style="margin-top: 24px;">
+    <div style="flex:1; display:flex; flex-direction:column; gap:16px;">
+        <h1 style="margin:0;">{{ product.name }}</h1>
+        <p style="color:#2874f0; margin:0;">{{ product.category.name }}</p>
+        <h2 style="color:#388e3c; margin:0;">₹{{ product.price }}</h2>
+        <p style="color:#555; line-height:1.6;">{{ product.description }}</p>
+        <div>
             {% if product.is_in_stock %}
-                <p style="color:green;">✅ In Stock ({{ product.stock }} left)</p>
-                <button class="btn btn-primary" style="margin-right:8px;">🛒 Add to Cart</button>
-                <button class="btn btn-secondary">Buy Now</button>
+                <p style="color:green; margin-bottom:16px;">✅ In Stock ({{ product.stock }} left)</p>
+                <div style="display:flex; gap:12px;">
+                    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">🛒 Add to Cart</a>
+                    <a href="{% url 'checkout' %}" class="btn btn-secondary">Buy Now</a>
+                </div>
             {% else %}
                 <p style="color:red;">❌ Out of Stock</p>
             {% endif %}

@@ -53,6 +53,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'ecom.urls'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 TEMPLATES = [
     {
@@ -61,6 +62,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -121,5 +123,8 @@ STATIC_URL = 'static/'
 import os
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# This is where uploaded product images will be stored
+MEDIA_ROOT = BASE_DIR / 'media'
+
+LOGIN_URL = '/users/login/'  # Redirect to login page if not authenticated
+LOGIN_REDIRECT_URL = '/'  # Redirect to home after login
+LOGOUT_REDIRECT_URL = '/'  # Redirect to home after logout
