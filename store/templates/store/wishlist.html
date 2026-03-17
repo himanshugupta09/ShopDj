@@ -1,0 +1,59 @@
+{% extends 'store/base.html' %}
+{% block title %}My Wishlist - ShopDjango{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h4 class="fw-bold mb-4">
+        <i class="bi bi-heart-fill text-danger"></i> My Wishlist
+        <span class="badge bg-secondary ms-2">{{ products.count }} items</span>
+    </h4>
+
+    {% if products %}
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
+        {% for product in products %}
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm">
+                <a href="{% url 'product_detail' product.slug %}">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}"
+                             class="card-img-top"
+                             style="height:160px; object-fit:contain; padding:8px;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/200x160?text=No+Image"
+                             class="card-img-top"
+                             style="height:160px; object-fit:contain;">
+                    {% endif %}
+                </a>
+                <div class="card-body p-2">
+                    <p class="small mb-1 text-truncate fw-bold">{{ product.name }}</p>
+                    <p class="price-tag mb-2">₹{{ product.price }}</p>
+
+                    <div class="d-flex gap-1">
+                        <a href="{% url 'add_to_cart' product.id %}"
+                           class="btn btn-warning btn-sm flex-grow-1 fw-bold">
+                            <i class="bi bi-cart-plus"></i> Add
+                        </a>
+                        <a href="{% url 'toggle_wishlist' product.id %}"
+                           class="btn btn-outline-danger btn-sm"
+                           title="Remove from wishlist">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-heart" style="font-size:64px; color:#ccc;"></i>
+        <h4 class="text-muted mt-3">Your wishlist is empty</h4>
+        <p class="text-muted">Click the ♡ on any product to save it here</p>
+        <a href="{% url 'product_list' %}" class="btn btn-primary mt-2">
+            Browse Products
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

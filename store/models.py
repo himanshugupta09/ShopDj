@@ -1,6 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
+
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
@@ -27,4 +30,14 @@ class Product(models.Model):
         return self.name
     def is_in_stock(self):
         return self.stock > 0
-    
+
+
+class Wishlist(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE, related_name='wishlist')
+    products = models.ManyToManyField(Product,blank=True,related_name='wishlisted_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Wishlist"
+    def total_items(self):
+        return self.products.count()

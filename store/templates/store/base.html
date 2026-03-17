@@ -5,26 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ShopDjango{% endblock %}</title>
-
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Your custom CSS on top of Bootstrap -->
     <link rel="stylesheet" href="{% static 'store/css/style.css' %}">
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
     <div class="container-fluid px-3">
-
-        <!-- Logo -->
         <a class="navbar-brand fw-bold fs-4" href="{% url 'home' %}">
             <i class="bi bi-shop"></i> ShopDjango
         </a>
 
-        <!-- Hamburger -->
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse" data-bs-target="#navbarContent">
             <span class="navbar-toggler-icon"></span>
@@ -32,30 +24,44 @@
 
         <div class="collapse navbar-collapse" id="navbarContent">
 
-            <!-- Search Bar -->
-            <form class="d-flex mx-auto my-2 my-lg-0" style="width:100%; max-width:500px;"
+            <form class="d-flex mx-auto my-2 my-lg-0"
+                  style="width:100%; max-width:500px;"
                   method="GET" action="{% url 'product_list' %}">
                 <input class="form-control me-0 rounded-start rounded-0"
                        type="search" name="q"
                        placeholder="Search products..."
                        value="{{ request.GET.q }}">
-                <button class="btn btn-warning rounded-end rounded-0 fw-bold" type="submit">
+                <button class="btn btn-warning rounded-end rounded-0 fw-bold"
+                        type="submit">
                     <i class="bi bi-search"></i>
                 </button>
             </form>
 
-            <!-- Nav Links -->
             <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'product_list' %}">
                         <i class="bi bi-grid"></i> Products
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'cart' %}">
                         <i class="bi bi-cart3"></i> Cart
                     </a>
                 </li>
+
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'wishlist' %}">
+                        <i class="bi bi-heart"></i> Wishlist
+                        {% if wishlist_count > 0 %}
+                            <span class="badge bg-danger" style="font-size:10px;">
+                                {{ wishlist_count }}
+                            </span>
+                        {% endif %}
+                    </a>
+                </li>
+                {% endif %}
 
                 {% if request.user.is_authenticated %}
                     {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
@@ -66,16 +72,17 @@
                     </li>
                     {% endif %}
 
-                    <!-- User Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
                            href="#" data-bs-toggle="dropdown">
                             {% if request.user.profile.avatar %}
                                 <img src="{{ request.user.profile.avatar.url }}"
-                                     style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid white;">
+                                     style="width:28px;height:28px;border-radius:50%;
+                                            object-fit:cover;border:2px solid white;">
                             {% else %}
-                                <div style="width:28px;height:28px;border-radius:50%;background:#ffe500;
-                                            display:flex;align-items:center;justify-content:center;">
+                                <div style="width:28px;height:28px;border-radius:50%;
+                                            background:#ffe500;display:flex;
+                                            align-items:center;justify-content:center;">
                                     <span style="color:#2874f0;font-weight:bold;font-size:12px;">
                                         {{ request.user.first_name|first|upper }}
                                     </span>
@@ -94,6 +101,11 @@
                                     <i class="bi bi-box-seam"></i> My Orders
                                 </a>
                             </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'wishlist' %}">
+                                    <i class="bi bi-heart"></i> My Wishlist
+                                </a>
+                            </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item text-danger" href="{% url 'logout' %}">
@@ -109,7 +121,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-warning btn-sm fw-bold ms-1" href="{% url 'register' %}">
+                        <a class="btn btn-warning btn-sm fw-bold ms-1"
+                           href="{% url 'register' %}">
                             Register
                         </a>
                     </li>
@@ -119,7 +132,6 @@
     </div>
 </nav>
 
-<!-- Flash Messages -->
 {% if messages %}
 <div class="container-fluid px-3 mt-2">
     {% for message in messages %}
@@ -131,12 +143,10 @@
 </div>
 {% endif %}
 
-<!-- MAIN CONTENT -->
 <main>
     {% block content %}{% endblock %}
 </main>
 
-<!-- FOOTER -->
 <footer class="bg-dark text-secondary text-center py-4 mt-5">
     <div class="container">
         <p class="mb-1">
@@ -147,7 +157,6 @@
     </div>
 </footer>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
