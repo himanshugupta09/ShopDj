@@ -5,70 +5,149 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ShopDjango{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Your custom CSS on top of Bootstrap -->
     <link rel="stylesheet" href="{% static 'store/css/style.css' %}">
 </head>
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar">
-    <a href="{% url 'home' %}" class="logo">🛒 ShopDjango</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+    <div class="container-fluid px-3">
 
-    <!-- Search Bar -->
-    <form class="search-bar" method="GET" action="{% url 'product_list' %}">
-        <input type="text" name="q" placeholder="Search products..." value="{{ request.GET.q }}">
-        <button type="submit">Search</button>
-    </form>
+        <!-- Logo -->
+        <a class="navbar-brand fw-bold fs-4" href="{% url 'home' %}">
+            <i class="bi bi-shop"></i> ShopDjango
+        </a>
 
-    <!-- Nav Links -->
-    <div>
-        <a href="{% url 'product_list' %}" style="margin-right:16px; color:white;">Products</a>
-        <a href="{% url 'cart' %}" style="margin-right:16px; color:white;">🛒 Cart</a>
+        <!-- Hamburger -->
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-        {% if request.user.is_authenticated %}
-            {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
-                <a href="{% url 'add_product' %}" style="margin-right:16px; color:#ffe500;">➕ Add Product</a>
-            {% endif %}
+        <div class="collapse navbar-collapse" id="navbarContent">
 
-            <a href="{% url 'profile' %}" style="margin-right:16px; color:white; display:inline-flex; align-items:center; gap:8px;">
-                {% if request.user.profile.avatar %}
-                    <img src="{{ request.user.profile.avatar.url }}"
-                        style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:2px solid white;">
+            <!-- Search Bar -->
+            <form class="d-flex mx-auto my-2 my-lg-0" style="width:100%; max-width:500px;"
+                  method="GET" action="{% url 'product_list' %}">
+                <input class="form-control me-0 rounded-start rounded-0"
+                       type="search" name="q"
+                       placeholder="Search products..."
+                       value="{{ request.GET.q }}">
+                <button class="btn btn-warning rounded-end rounded-0 fw-bold" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+
+            <!-- Nav Links -->
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'product_list' %}">
+                        <i class="bi bi-grid"></i> Products
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'cart' %}">
+                        <i class="bi bi-cart3"></i> Cart
+                    </a>
+                </li>
+
+                {% if request.user.is_authenticated %}
+                    {% if request.user.is_superuser or request.user.profile.role == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link text-warning fw-bold" href="{% url 'add_product' %}">
+                            <i class="bi bi-plus-circle"></i> Add Product
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <!-- User Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+                           href="#" data-bs-toggle="dropdown">
+                            {% if request.user.profile.avatar %}
+                                <img src="{{ request.user.profile.avatar.url }}"
+                                     style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid white;">
+                            {% else %}
+                                <div style="width:28px;height:28px;border-radius:50%;background:#ffe500;
+                                            display:flex;align-items:center;justify-content:center;">
+                                    <span style="color:#2874f0;font-weight:bold;font-size:12px;">
+                                        {{ request.user.first_name|first|upper }}
+                                    </span>
+                                </div>
+                            {% endif %}
+                            {{ request.user.first_name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'profile' %}">
+                                    <i class="bi bi-person"></i> My Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'order_history' %}">
+                                    <i class="bi bi-box-seam"></i> My Orders
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 {% else %}
-                    <div style="width:28px; height:28px; border-radius:50%; background:#ffe500;
-                                display:inline-flex; align-items:center; justify-content:center;">
-                        <span style="color:#2874f0; font-weight:bold; font-size:12px;">
-                            {{ request.user.first_name|first|upper }}
-                        </span>
-                    </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="bi bi-person"></i> Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-warning btn-sm fw-bold ms-1" href="{% url 'register' %}">
+                            Register
+                        </a>
+                    </li>
                 {% endif %}
-                {{ request.user.first_name }}
-            </a>
-            <a href="{% url 'logout' %}" style="color:white;">Logout</a>
-        {% else %}
-            <a href="{% url 'login' %}" style="margin-right:16px; color:white;">Login</a>
-            <a href="{% url 'register' %}" style="color:white;">Register</a>
-        {% endif %}
+            </ul>
+        </div>
     </div>
 </nav>
 
+<!-- Flash Messages -->
+{% if messages %}
+<div class="container-fluid px-3 mt-2">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <!-- MAIN CONTENT -->
-
 <main>
-    <!-- Flash Messages -->
-    {% if messages %}
-        {% for message in messages %}
-            <div style="background:#d4edda; color:#155724; padding:12px 24px; border-left: 4px solid #28a745;">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    {% block content %}
-    {% endblock %}
+    {% block content %}{% endblock %}
 </main>
-<footer>
-    <p>© 2025 ShopDjango — Built with Django 🐍</p>
+
+<!-- FOOTER -->
+<footer class="bg-dark text-secondary text-center py-4 mt-5">
+    <div class="container">
+        <p class="mb-1">
+            <i class="bi bi-shop text-warning"></i>
+            <strong class="text-white">ShopDjango</strong>
+        </p>
+        <p class="small mb-0">© 2025 ShopDjango — Built with Django 🐍</p>
+    </div>
 </footer>
 
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

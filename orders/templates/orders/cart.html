@@ -2,64 +2,107 @@
 {% block title %}Your Cart - ShopDjango{% endblock %}
 
 {% block content %}
-<div style="max-width:800px; margin:40px auto;">
-    <h2>🛒 Your Cart</h2>
+<div class="container py-4">
+    <h4 class="fw-bold mb-4">
+        <i class="bi bi-cart3"></i> Your Cart
+    </h4>
 
     {% if items %}
-    <div style="background:white; border-radius:8px; padding:24px; margin-top:16px;">
-        {% for item in items %}
-        <div style="display:flex; align-items:center; gap:16px; padding:16px 0; border-bottom:1px solid #eee;">
-            
-            <!-- Product Image -->
-            {% if item.product.image %}
-                <img src="{{ item.product.image.url }}" style="width:80px; height:80px; object-fit:contain;">
-            {% else %}
-                <div style="width:80px; height:80px; background:#f5f5f5; display:flex; align-items:center; justify-content:center;">
-                    🛍️
+    <div class="row g-4">
+
+        <!-- Cart Items -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    {% for item in items %}
+                    <div class="d-flex align-items-center gap-3 p-3 border-bottom">
+                        <!-- Image -->
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}"
+                                 style="width:80px;height:80px;object-fit:contain;">
+                        {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center"
+                                 style="width:80px;height:80px;">
+                                <i class="bi bi-image text-muted fs-4"></i>
+                            </div>
+                        {% endif %}
+
+                        <!-- Info -->
+                        <div class="flex-grow-1">
+                            <p class="fw-bold mb-0">{{ item.product.name }}</p>
+                            <p class="text-success mb-0">₹{{ item.product.price }}</p>
+                        </div>
+
+                        <!-- Quantity -->
+                        <form method="POST"
+                              action="{% url 'update_cart' item.id %}"
+                              class="d-flex align-items-center gap-2">
+                            {% csrf_token %}
+                            <input type="number" name="quantity"
+                                   value="{{ item.quantity }}"
+                                   min="0" max="{{ item.product.stock }}"
+                                   class="form-control form-control-sm"
+                                   style="width:70px;">
+                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                Update
+                            </button>
+                        </form>
+
+                        <!-- Total -->
+                        <p class="fw-bold mb-0" style="min-width:80px; text-align:right;">
+                            ₹{{ item.get_item_total }}
+                        </p>
+
+                        <!-- Remove -->
+                        <a href="{% url 'remove_from_cart' item.id %}"
+                           class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
                 </div>
-            {% endif %}
-
-            <!-- Product Info -->
-            <div style="flex:1;">
-                <p style="font-weight:bold;">{{ item.product.name }}</p>
-                <p style="color:#388e3c;">₹{{ item.product.price }}</p>
             </div>
-
-            <!-- Quantity Update Form -->
-            <form method="POST" action="{% url 'update_cart' item.id %}" style="display:flex; align-items:center; gap:8px;">
-                {% csrf_token %}
-                <input type="number" name="quantity" value="{{ item.quantity }}" 
-                       min="0" max="{{ item.product.stock }}"
-                       style="width:60px; padding:4px 8px; border:1px solid #ddd; border-radius:4px;">
-                <button type="submit" class="btn btn-secondary" style="padding:6px 12px;">Update</button>
-            </form>
-
-            <!-- Item Total -->
-            <p style="font-weight:bold; min-width:80px; text-align:right;">
-                ₹{{ item.get_item_total }}
-            </p>
-
-            <!-- Remove -->
-            <a href="{% url 'remove_from_cart' item.id %}" 
-               style="color:red; text-decoration:none; font-size:20px;">🗑️</a>
         </div>
-        {% endfor %}
 
-        <!-- Cart Total -->
-        <div style="text-align:right; padding-top:16px;">
-            <h3>Total: ₹{{ total }}</h3>
-            <a href="{% url 'checkout' %}" class="btn btn-primary" style="margin-top:12px; display:inline-block;">
-                Proceed to Checkout →
-            </a>
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Order Summary</h5>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Subtotal</span>
+                        <span>₹{{ total }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Delivery</span>
+                        <span class="text-success">FREE</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold fs-5">
+                        <span>Total</span>
+                        <span class="text-success">₹{{ total }}</span>
+                    </div>
+                    <a href="{% url 'checkout' %}"
+                       class="btn btn-primary w-100 mt-3 fw-bold">
+                        Proceed to Checkout →
+                    </a>
+                    <a href="{% url 'product_list' %}"
+                       class="btn btn-outline-secondary w-100 mt-2">
+                        Continue Shopping
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
     {% else %}
-        <div style="background:white; padding:48px; text-align:center; border-radius:8px; margin-top:16px;">
-            <p style="font-size:48px;">🛒</p>
-            <p style="color:#888; margin:16px 0;">Your cart is empty</p>
-            <a href="{% url 'product_list' %}" class="btn btn-primary">Start Shopping</a>
-        </div>
+    <div class="text-center py-5">
+        <i class="bi bi-cart-x" style="font-size:64px; color:#ccc;"></i>
+        <h4 class="text-muted mt-3">Your cart is empty</h4>
+        <a href="{% url 'product_list' %}" class="btn btn-primary mt-3">
+            Start Shopping
+        </a>
+    </div>
     {% endif %}
 </div>
 {% endblock %}

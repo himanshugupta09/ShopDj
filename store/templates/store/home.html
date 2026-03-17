@@ -1,41 +1,76 @@
 {% extends 'store/base.html' %}
-
 {% block title %}Home - ShopDjango{% endblock %}
 
 {% block content %}
 
-<!-- CATEGORIES ROW -->
-<div style="padding: 16px 24px; background: white; margin-bottom: 8px;">
-    <strong>Categories: </strong>
-    {% for category in categories %}
-        <a href="{% url 'category_products' category.slug %}"
-           style="margin-right: 16px; color: #2874f0;">
-            {{ category.name }}
-        </a>
-    {% endfor %}
+<!-- Categories Row -->
+<div class="bg-white border-bottom py-3 px-3">
+    <div class="container-fluid d-flex gap-2 flex-wrap align-items-center">
+        <span class="text-muted small fw-bold me-2">
+            <i class="bi bi-grid-fill"></i> Categories:
+        </span>
+        {% for category in categories %}
+            <a href="{% url 'category_products' category.slug %}"
+               class="category-badge">
+                {{ category.name }}
+            </a>
+        {% endfor %}
+    </div>
 </div>
 
-<!-- FEATURED PRODUCTS -->
-<h2 style="padding: 16px 24px;">Featured Products</h2>
-<div class="product-grid">
-    {% for product in products %}
-        <a href="{% url 'product_detail' product.slug %}" class="product-card">
-            {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-            {% else %}
-                <img src="https://via.placeholder.com/200x180?text=No+Image" alt="No image">
-            {% endif %}
-            <p class="name">{{ product.name }}</p>
-            <p class="price">₹{{ product.price }}</p>
-            {% if product.is_in_stock %}
-                <span style="color: green; font-size: 12px;">✅ In Stock</span>
-            {% else %}
-                <span style="color: red; font-size: 12px;">❌ Out of Stock</span>
-            {% endif %}
+<!-- Hero Banner -->
+<div class="bg-primary text-white py-5 mb-4">
+    <div class="container text-center">
+        <h1 class="fw-bold">Welcome to ShopDjango</h1>
+        <p class="lead">Discover amazing products at unbeatable prices</p>
+        <a href="{% url 'product_list' %}" class="btn btn-warning btn-lg fw-bold px-5">
+            Shop Now <i class="bi bi-arrow-right"></i>
         </a>
-    {% empty %}
-        <p>No products available.</p>
-    {% endfor %}
+    </div>
+</div>
+
+<!-- Featured Products -->
+<div class="container-fluid px-4">
+    <h4 class="fw-bold mb-3">
+        <i class="bi bi-star-fill text-warning"></i> Featured Products
+    </h4>
+
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
+        {% for product in products %}
+        <div class="col">
+            <a href="{% url 'product_detail' product.slug %}" class="product-card">
+                <div class="card h-100 border-0 shadow-sm">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}"
+                             class="card-img-top product-card img"
+                             alt="{{ product.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/200x180?text=No+Image"
+                             class="card-img-top"
+                             style="height:180px; object-fit:contain; padding:8px;">
+                    {% endif %}
+                    <div class="card-body p-2">
+                        <p class="card-text small mb-1 text-truncate">{{ product.name }}</p>
+                        <p class="price-tag mb-1">₹{{ product.price }}</p>
+                        {% if product.is_in_stock %}
+                            <span class="badge bg-success-subtle text-success" style="font-size:11px;">
+                                ✅ In Stock
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger-subtle text-danger" style="font-size:11px;">
+                                ❌ Out of Stock
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+            <div class="col-12">
+                <p class="text-muted">No products available.</p>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock %}

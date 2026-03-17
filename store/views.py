@@ -5,12 +5,12 @@ from django.views.generic import ListView, DetailView
 from django.contrib import messages
 from .forms import ProductForm
 from django.core.exceptions import PermissionDenied
-
+from django.db.models import Q
 def add_product(request):
     # Only admin role can add products
     if not request.user.is_authenticated or request.user.profile.role != 'admin':
         raise PermissionDenied  # returns 403 Forbidden
-    ...
+    
     
 def home(request):
     featured_products = Product.objects.filter(stock__gt=0)[:8]
@@ -21,6 +21,7 @@ def home(request):
     }
     return render(request, 'store/home.html', context)
 
+  # ← add this import at top
 class ProductListView(ListView):
     model = Product
     template_name = 'store/product_list.html'
@@ -28,18 +29,32 @@ class ProductListView(ListView):
     paginate_by = 12
 
     def get_queryset(self):
-        queryset = Product.objects.filter(stock__gt=0)
-        category_slug = self.request.GET.get('category_slug')
-        if category_slug:
-            queryset = queryset.filter(category__slug=category_slug)
+        # order_by fixes the UnorderedObjectListWarning
+        queryset = Product.objects.filter(stock__gt=0).order_by('-created_at')
+
         search_query = self.request.GET.get('q')
+
+        # Debug — remove after fixing
+        print("SEARCH:", search_query)
+        print("BEFORE FILTER:", queryset.count())
+
         if search_query:
-            queryset = queryset.filter(name__icontains=search_query)
+            queryset = queryset.filter(
+                Q(name__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(category__name__icontains=search_query)
+            ).order_by('-created_at')
+
+        print("AFTER FILTER:", queryset.count())
         return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         return context
+
+
+    
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'store/product_detail.html'

@@ -1,42 +1,76 @@
 {% extends 'store/base.html' %}
-
 {% block title %}All Products - ShopDjango{% endblock %}
 
 {% block content %}
-<div style="padding: 16px 24px;">
+<div class="container-fluid px-4 py-4">
 
     <!-- Search result info -->
     {% if request.GET.q %}
-        <p>Search results for: <strong>{{ request.GET.q }}</strong></p>
+    <div class="alert alert-info py-2">
+        <i class="bi bi-search"></i>
+        Search results for: <strong>{{ request.GET.q }}</strong>
+        <a href="{% url 'product_list' %}" class="float-end text-muted small">Clear</a>
+    </div>
     {% endif %}
 
-    <div class="product-grid">
+    <!-- Products Grid -->
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
         {% for product in products %}
+        <div class="col">
             <a href="{% url 'product_detail' product.slug %}" class="product-card">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                {% else %}
-                    <img src="https://via.placeholder.com/200x180?text=No+Image" alt="No image">
-                {% endif %}
-                <p class="name">{{ product.name }}</p>
-                <p class="price">₹{{ product.price }}</p>
+                <div class="card h-100 border-0 shadow-sm">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}"
+                             class="card-img-top"
+                             style="height:180px; object-fit:contain; padding:8px;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/200x180?text=No+Image"
+                             class="card-img-top"
+                             style="height:180px; object-fit:contain; padding:8px;">
+                    {% endif %}
+                    <div class="card-body p-2">
+                        <p class="small mb-1 text-truncate">{{ product.name }}</p>
+                        <p class="price-tag mb-0">₹{{ product.price }}</p>
+                    </div>
+                </div>
             </a>
+        </div>
         {% empty %}
-            <p>No products found.</p>
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-search" style="font-size:48px; color:#ccc;"></i>
+            <p class="text-muted mt-2">No products found.</p>
+            <a href="{% url 'product_list' %}" class="btn btn-primary btn-sm">
+                View all products
+            </a>
+        </div>
         {% endfor %}
     </div>
 
-    <!-- PAGINATION -->
+    <!-- Pagination -->
     {% if is_paginated %}
-        <div style="text-align:center; padding: 24px;">
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
-                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary">← Prev</a>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                    ← Prev
+                </a>
+            </li>
             {% endif %}
-            <span style="margin: 0 16px;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            <li class="page-item active">
+                <span class="page-link">
+                    {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary">Next →</a>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                    Next →
+                </a>
+            </li>
             {% endif %}
-        </div>
+        </ul>
+    </nav>
     {% endif %}
 
 </div>

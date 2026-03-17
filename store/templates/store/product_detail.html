@@ -1,29 +1,64 @@
 {% extends 'store/base.html' %}
 {% block title %}{{ product.name }} - ShopDjango{% endblock %}
+
 {% block content %}
-<div style="display:flex; gap:40px; padding:40px; background:white; margin:24px; border-radius:8px;">
-    <div style="flex:1;">
-        {% if product.image %}
-            <img src="{{ product.image.url }}" style="width:100%; max-height:400px; object-fit:contain;">
-        {% else %}
-            <img src="https://via.placeholder.com/200x180?text=No+Image" style="width:100%;">
-        {% endif %}
-    </div>
-    <div style="flex:1; display:flex; flex-direction:column; gap:16px;">
-        <h1 style="margin:0;">{{ product.name }}</h1>
-        <p style="color:#2874f0; margin:0;">{{ product.category.name }}</p>
-        <h2 style="color:#388e3c; margin:0;">₹{{ product.price }}</h2>
-        <p style="color:#555; line-height:1.6;">{{ product.description }}</p>
-        <div>
-            {% if product.is_in_stock %}
-                <p style="color:green; margin-bottom:16px;">✅ In Stock ({{ product.stock }} left)</p>
-                <div style="display:flex; gap:12px;">
-                    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">🛒 Add to Cart</a>
-                    <a href="{% url 'checkout' %}" class="btn btn-secondary">Buy Now</a>
-                </div>
+<div class="container py-4">
+    <div class="row bg-white rounded shadow-sm p-4">
+
+        <!-- Image -->
+        <div class="col-md-5 text-center">
+            {% if product.image %}
+                <img src="{{ product.image.url }}"
+                     class="img-fluid"
+                     style="max-height:400px; object-fit:contain;">
             {% else %}
-                <p style="color:red;">❌ Out of Stock</p>
+                <img src="https://via.placeholder.com/400x400?text=No+Image"
+                     class="img-fluid">
             {% endif %}
+        </div>
+
+        <!-- Info -->
+        <div class="col-md-7 d-flex flex-column gap-3 mt-4 mt-md-0">
+            <h2 class="fw-bold mb-0">{{ product.name }}</h2>
+
+            <p class="mb-0">
+                <a href="{% url 'category_products' product.category.slug %}"
+                   class="text-primary text-decoration-none">
+                    <i class="bi bi-tag"></i> {{ product.category.name }}
+                </a>
+            </p>
+
+            <h3 class="text-success fw-bold mb-0">₹{{ product.price }}</h3>
+
+            <p class="text-muted">{{ product.description }}</p>
+
+            <div>
+                {% if product.is_in_stock %}
+                    <p class="text-success mb-3">
+                        <i class="bi bi-check-circle-fill"></i>
+                        In Stock ({{ product.stock }} units left)
+                    </p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{% url 'add_to_cart' product.id %}"
+                           class="btn btn-warning fw-bold px-4">
+                            <i class="bi bi-cart-plus"></i> Add to Cart
+                        </a>
+                        <a href="{% url 'checkout' %}"
+                           class="btn btn-primary fw-bold px-4">
+                            <i class="bi bi-lightning-fill"></i> Buy Now
+                        </a>
+                    </div>
+                {% else %}
+                    <span class="badge bg-danger fs-6">Out of Stock</span>
+                {% endif %}
+            </div>
+
+            <!-- Meta info -->
+            <div class="border-top pt-3 mt-2">
+                <small class="text-muted">
+                    <i class="bi bi-box-seam"></i> Stock: {{ product.stock }} units
+                </small>
+            </div>
         </div>
     </div>
 </div>
