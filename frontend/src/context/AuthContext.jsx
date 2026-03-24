@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
     const fetchUser = async () => {
         try {
             const res = await getProfile();
-            setUser(res.data);
+            setUser(res.data.data);  // ← reads from res.data.data
         } catch {
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');

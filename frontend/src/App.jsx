@@ -7,6 +7,8 @@ import Home from './pages/Home';
 import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import OrderConfirmation from './pages/OrderConfirmation';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Wishlist from './pages/Wishlist';
@@ -32,6 +34,12 @@ function App() {
                         {/* Protected */}
                         <Route path="/cart" element={
                             <ProtectedRoute><Cart /></ProtectedRoute>
+                        } />
+                        <Route path="/checkout" element={
+                            <ProtectedRoute><Checkout /></ProtectedRoute>
+                        } />
+                        <Route path="/order-confirmation/:orderId" element={
+                            <ProtectedRoute><OrderConfirmation /></ProtectedRoute>
                         } />
                         <Route path="/wishlist" element={
                             <ProtectedRoute><Wishlist /></ProtectedRoute>

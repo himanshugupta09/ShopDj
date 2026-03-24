@@ -14,7 +14,8 @@ export default function ProductList() {
     }, [searchParams]);
 
     useEffect(() => {
-        getCategories().then(res => setCategories(res.data));
+        getCategories()
+            .then(res => setCategories(res.data.data || []));  // ← .data.data
     }, []);
 
     const fetchProducts = async () => {
@@ -24,7 +25,7 @@ export default function ProductList() {
                 q: searchParams.get('q') || '',
                 category: searchParams.get('category') || ''
             });
-            setProducts(res.data);
+            setProducts(res.data.data || []);               // ← .data.data
         } catch (err) {
             console.error(err);
         }
@@ -37,9 +38,16 @@ export default function ProductList() {
             {/* Search info */}
             {searchParams.get('q') && (
                 <div className="alert alert-info py-2 d-flex justify-content-between">
-                    <span>Results for: <strong>{searchParams.get('q')}</strong></span>
-                    <button className="btn btn-sm btn-outline-secondary"
-                            onClick={() => setSearchParams({})}>
+                    <span>
+                        Results for: <strong>{searchParams.get('q')}</strong>
+                        <span className="text-muted ms-2">
+                            ({products.length} found)
+                        </span>
+                    </span>
+                    <button
+                        className="btn btn-sm btn-outline-secondary"
+                        onClick={() => setSearchParams({})}
+                    >
                         Clear ✕
                     </button>
                 </div>
@@ -47,14 +55,26 @@ export default function ProductList() {
 
             {/* Category filter */}
             <div className="d-flex gap-2 mb-3 flex-wrap">
-                <button className={`btn btn-sm ${!searchParams.get('category') ? 'btn-primary' : 'btn-outline-primary'}`}
-                        onClick={() => setSearchParams({})}>
+                <button
+                    className={`btn btn-sm ${
+                        !searchParams.get('category')
+                            ? 'btn-primary'
+                            : 'btn-outline-primary'
+                    }`}
+                    onClick={() => setSearchParams({})}
+                >
                     All
                 </button>
                 {categories.map(cat => (
-                    <button key={cat.id}
-                            className={`btn btn-sm ${searchParams.get('category') === cat.slug ? 'btn-primary' : 'btn-outline-primary'}`}
-                            onClick={() => setSearchParams({ category: cat.slug })}>
+                    <button
+                        key={cat.id}
+                        className={`btn btn-sm ${
+                            searchParams.get('category') === cat.slug
+                                ? 'btn-primary'
+                                : 'btn-outline-primary'
+                        }`}
+                        onClick={() => setSearchParams({ category: cat.slug })}
+                    >
                         {cat.name}
                     </button>
                 ))}
@@ -75,6 +95,12 @@ export default function ProductList() {
                 <div className="text-center py-5">
                     <p style={{ fontSize: '48px' }}>🔍</p>
                     <p className="text-muted">No products found</p>
+                    <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() => setSearchParams({})}
+                    >
+                        View all products
+                    </button>
                 </div>
             )}
         </div>

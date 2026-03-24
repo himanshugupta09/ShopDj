@@ -10,16 +10,19 @@ export default function Login() {
     const { login } = useAuth();
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+        const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
         try {
             const res = await loginUser(form);
-            login(res.data, res.data.user);
+            const { data } = res.data;  // ← now reads from res.data.data
+            login(data, data.user);
             navigate('/');
         } catch (err) {
-            setError(err.response?.data?.error || 'Login failed');
+            setError(
+                err.response?.data?.message || 'Login failed'
+            );
         }
         setLoading(false);
     };
