@@ -9,6 +9,6 @@ urlpatterns = [
     path('products/<slug:slug>/update/', api_views.ProductUpdateAPI.as_view()),
     path('products/<slug:slug>/delete/', api_views.ProductDeleteAPI.as_view()),
     path('categories/', api_views.CategoryListAPI.as_view()),
-    path('wishlist/', api_views.wishlist_api),
-    path('wishlist/toggle/<int:product_id>/', api_views.toggle_wishlist_api),
+    path('wishlist/', api_views.WishlistAPI.as_view()),
+    path('wishlist/toggle/<int:product_id>/', api_views.WishlistAPI.as_view()),
 ]

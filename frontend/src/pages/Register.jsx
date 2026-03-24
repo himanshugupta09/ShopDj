@@ -23,13 +23,13 @@ export default function Register() {
         setError('');
         try {
             const res = await registerUser(form);
-            login(res.data, res.data.user);
+            const { data } = res.data;  // ← reads from res.data.data
+            login(data, data.user);
             navigate('/');
         } catch (err) {
-            const errors = err.response?.data;
-            setError(typeof errors === 'object'
-                ? Object.values(errors)[0]
-                : 'Registration failed');
+            setError(
+                err.response?.data?.message || 'Registration failed'
+            );
         }
         setLoading(false);
     };
