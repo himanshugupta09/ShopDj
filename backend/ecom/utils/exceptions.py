@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class AppException(Exception):
     """
-    Base custom exception for ShopDjango.
+    Base custom exception for GopalWala.
     Use this as parent for all custom exceptions.
     """
     def __init__(self, message="An error occurred", status_code=400, errors=None):

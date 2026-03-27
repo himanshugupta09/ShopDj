@@ -22,7 +22,7 @@ def api_overview(request):
         'orders': '/api/orders/',
         'wishlist': '/api/wishlist/',
     }
-    return APIResponse.success(data=urls, message="ShopDjango API")
+    return APIResponse.success(data=urls, message="GopalWala API")
 
 
 class ProductListAPI(generics.ListAPIView):

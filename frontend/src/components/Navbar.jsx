@@ -25,7 +25,7 @@ export default function Navbar() {
 
                 {/* Logo */}
                 <Link className="navbar-brand fw-bold fs-4" to="/">
-                    🛒 ShopDjango
+                    🛒 GopalWala
                 </Link>
 
                 {/* Hamburger */}

@@ -55,7 +55,7 @@ export default function Home() {
             {/* Hero */}
             <div className="bg-primary text-white py-5 mb-4">
                 <div className="container text-center">
-                    <h1 className="fw-bold">Welcome to ShopDjango</h1>
+                    <h1 className="fw-bold">Welcome to GopalWala</h1>
                     <p className="lead">
                         Discover amazing products at unbeatable prices
                     </p>
