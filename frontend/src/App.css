@@ -2,6 +2,49 @@
   text-align: center;
 }
 
+
+.progress-bg-line {
+    position: absolute;
+    top: 15px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 3px;
+    background: #e9ecef;
+    z-index: 0;
+}
+
+.status-node {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-weight: bold;
+    font-size: 14px;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #dee2e6;
+}
+
+.status-node.active {
+    background: #198754;
+    color: white;
+    box-shadow: 0 0 0 1px #198754;
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    background: #198754;
+    border-radius: 50%;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;

@@ -9,6 +9,19 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+TIME_ZONE = 'UTC'
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE  # Uses the UTC you already defined
+
+# Current Email Backend is Console (for development)
+# Celery will still "send" them there in the background
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -108,5 +121,3 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
-# ── EMAIL ──
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

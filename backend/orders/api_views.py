@@ -1,7 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from orders.views import cart
 from store.models import Product
-from .models import Cart, CartItem, Order, OrderItem
+from .models import Cart, CartItem, Delivery, Order, OrderItem
 from .serializers import CartSerializer, OrderSerializer
 from ecom.utils.responses import APIResponse
 from ecom.utils.exceptions import (
@@ -11,6 +12,22 @@ from ecom.utils.exceptions import (
     OrderNotFoundException
 )
 
+
+
+class CheckoutAPI(APIView):
+    def post(self, request):
+        address_id = request.data.get('address_id')
+        
+        order = Order.objects.create(
+            user=request.user,
+            total_price=cart.get_total(),
+            status='processing' # Move from pending to processing
+        )
+        
+        Delivery.objects.create(
+            order=order,
+            tracking_number=f"SDJ-{order.id}-{request.user.id}" # Simple tracking logic
+        )
 
 class CartAPI(APIView):
     permission_classes = [IsAuthenticated]
